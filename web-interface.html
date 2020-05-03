@@ -1,0 +1,286 @@
+<html>
+<head>
+    <!-- Script Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <!-- Bundled HearthNash Scripts -->
+    <script type="text/javascript" src="lib/HNBundle.js"></script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/HN-web-interface.css">
+</head>
+
+
+<body>
+    <div class="container-fluid mt-4 mb-5">
+        <!-- Title -->
+        <div class="row mb-3">
+            <div class="col-12 mb-3 text-center">
+                <h1>HearthNash Web Interface</h1>
+            </div>
+        </div>
+
+        <!-- Meta Settings -->
+        <div class="row">
+            <div class="col-lg-6 col-12 mb-3">
+                <h2><u>Meta Settings</u></h2>
+                <table id="winratesTable" class="table table-bordered table-responsive">
+                    <thead id="winratesTableHead">
+                        <tr id="theadRow">
+                            <th scope="col">P0</th>
+                            <th scope="col">P1</th>
+                            <th scope="col"></th>
+                            <th scope="col" id="deckNameTop0">Deck 0</th>
+                            <th scope="col" id="deckNameTop1">Deck 1</th>
+                            <th scope="col" id="deckNameTop2">Deck 2</th>
+                            <th scope="col" id="deckNameTop3">Deck 3</th>
+                        </tr>
+                    </thead>
+                    <tbody id="winratesTableBody">
+                        <tr class="winratesRow" id="winratesRow0">
+                            <td class="no-border">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="P0_CheckDeck0" checked>
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="P1_CheckDeck0">
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <input class="form-control deckName" id="deckName0" value="Deck 0">
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate0_0" value="50" disabled>
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate0_1" value="50" disabled>
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate0_2" value="50" disabled>
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate0_3" value="50" disabled>
+                                    <label>%</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="winratesRow" id="winratesRow1">
+                            <td class="no-border">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="P0_CheckDeck1" checked>
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="P1_CheckDeck1">
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <input class="form-control deckName" id="deckName1" value="Deck 1">
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate1_0" value="50">
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate1_1" value="50" disabled>
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate1_2" value="50" disabled>
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate1_3" value="50" disabled>
+                                    <label>%</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="winratesRow" id="winratesRow2">
+                            <td class="no-border">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="P0_CheckDeck2">
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="P1_CheckDeck2" checked>
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <input class="form-control deckName" id="deckName2" value="Deck 2">
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate2_0" value="50">
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate2_1" value="50">
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate2_2" value="50" disabled>
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate2_3" value="50" disabled>
+                                    <label>%</label>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="winratesRow" id="winratesRow3">
+                            <td class="no-border">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="P0_CheckDeck3">
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="P1_CheckDeck3" checked>
+                                </div>
+                            </td>
+                            <td class="no-border">
+                                <input class="form-control deckName" id="deckName3" value="Deck 3">
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate3_0" value="50">
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate3_1" value="50">
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate3_2" value="50">
+                                    <label>%</label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-check form-check-inline">
+                                    <input type="number" step="any" class="form-control deckWinrate" id="deckWinrate3_3" value="50" disabled>
+                                    <label>%</label>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-sm btn-dark mb-2" id="minus1Deck">-1 Deck</button>
+                <button type="button" class="btn btn-sm btn-dark mb-2" id="plus1Deck">+1 Deck</button>
+            </div>
+
+            <!-- Format Settings -->
+            <div class="col-lg-6 col-12 mb-3">
+                <h2><u>Format Settings</u></h2>
+                <div class="row">
+                    <div class="col-12 mb-2">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-primary dropdown-toggle" id="presetDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Choose Preset
+                            </button>
+                            <div class="dropdown-menu" id="presetDropdownLinks" aria-labelledby="presetDropdown">
+                                <button class="dropdown-item" id="samplePresetLink" hidden>Sample Preset Link</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <!-- Number inputs -->
+                        <div class="form-check form-check-inline mb-1">
+                            <input type="number" step="1" class="form-control smNumInput mr-1" id="protects" value="0">
+                            <label class="formatLabel" for="protects">Protects</label>
+                        </div>
+                        <br>
+                        <div class="form-check form-check-inline mb-1">
+                            <input type="number" step="1" class="form-control smNumInput mr-1" id="bans" value="1">
+                            <label class="formatLabel" for="bans">Bans</label>
+                        </div>
+                        <br>
+                        <div class="form-check form-check-inline mb-1">
+                            <input type="number" step="1" class="form-control smNumInput mr-1" id="gamesToWin" value="1">
+                            <label class="formatLabel" for="gamesToWin">Games To Win</label>
+                        </div>
+                        <br>
+                        <div class="form-check form-check-inline mb-1">
+                            <input type="number" step="1" class="form-control smNumInput mr-1" id="decksPerPlayer" value="2">
+                            <label class="formatLabel" for="decksPerPlayer">Decks Per Player</label>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <!-- Checkboxes -->
+                        <div class="form-check form-check-inline mb-1">
+                            <input class="form-check-input mr-1" type="checkbox" value="" id="removeWinnerDeck" checked>
+                            <label class="formatLabel" for="removeWinnerDeck">Remove Winner Deck</label>
+                        </div>
+                        <br>
+                        <div class="form-check form-check-inline mb-1">
+                            <input class="form-check-input mr-1" type="checkbox" value="" id="removeLoserDeck">
+                            <label class="formatLabel" for="removeLoserDeck">Remove Loser Deck</label>
+                        </div>
+                        <br>
+                        <div class="form-check form-check-inline mb-1">
+                            <input class="form-check-input mr-1" type="checkbox" value="" id="winnerCanSwitch" checked>
+                            <label class="formatLabel" for="winnerCanSwitch">Winner Can Switch</label>
+                        </div>
+                        <br>
+                        <div class="form-check form-check-inline mb-1">
+                            <input class="form-check-input mr-1" type="checkbox" value="" id="loserCanSwitch" checked>
+                            <label class="formatLabel" for="loserCanSwitch">Loser Can Switch</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Match Tree Explorer -->
+            <div class="col-lg-6 col-12 mb-3">
+                <h2><u>Match Tree Explorer</u></h2>
+                <button type="button" class="btn btn-lg btn-primary mb-2" id="generateMatchTreeBtn">Generate</button>
+                <p id="generateMTBErrorText" hidden></p>
+                <br>
+                <div id="explorerParents">
+                    <button type="button" class="btn btn-dark mb-1 mr-2" id="matchTreeRoot" style="display:none">Match Tree Root</button>
+                </div>
+                <h4 class="mt-2 hide-before-generation"><u>Children</u></h4>
+                <div id="explorerChildren">
+                </div>
+                <button type="button" class="btn btn-block btn-secondary" id="childSample" style="display:none"></button>
+                <h4 class="mt-2 hide-before-generation"><u>Vertex Details</u></h4>
+                <p id="vertexDetails"></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+/* Imports */
+@import url("https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css");
+
+
+/* Responsive styling */
+/* https://getbootstrap.com/docs/4.1/layout/overview/#responsive-breakpoints */
+@media (min-width: 576px) {
+    html {
+        font-size: 0.9em;
+    }
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 1em;
+    }
+}
+
+@media (min-width: 992px) {
+    html {
+        font-size: 1.05em;
+    }
+}
+
+@media (min-width: 1200px) {
+    html {
+        font-size: 1.1em;
+    }
+}
+
+/* Text styling */
+p {
+    font: 1.4em cambria;
+}

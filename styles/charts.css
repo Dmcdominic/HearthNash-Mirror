@@ -1,0 +1,10 @@
+/* Styling for charts */
+
+#chart_default_container {
+    display: none;
+}
+
+.google_chart {
+    width: 90%;
+    height: 30%;
+}

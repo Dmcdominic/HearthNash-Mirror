@@ -1,0 +1,45 @@
+{
+  "name": "hearthnash",
+  "version": "0.1.4",
+  "description": "A game theoretic tool for Hearthstone match format analysis.",
+  "main": "./lib/index.js",
+  "bin": {
+    "hearthnash": "./lib/index.js"
+  },
+  "scripts": {
+    "start": "./lib/index.js",
+    "build": "tsc && browserify ./lib/WebInterface.js -o ./lib/HNBundle.js",
+    "watch": "tsc -w",
+    "startFresh": "npm run clearData && npm run start",
+    "create": "npm run build && npm run start",
+    "refresh": "rm -rf ./node_modules ./package-lock.json && npm install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@types/jquery": "^3.3.34",
+    "@types/node": "^13.11.0",
+    "fs-extra": "^9.0.0",
+    "jquery": "^3.5.0",
+    "mersenne-twister": "^1.1.0",
+    "typescript": "^3.7.5"
+  },
+  "devDependencies": {
+    "browserify": "^16.5.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dmcdominic/HearthNash.git"
+  },
+  "keywords": [
+    "game",
+    "game-theory",
+    "hearthstone",
+    "cli"
+  ],
+  "author": "Dominic Calkosz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Dmcdominic/HearthNash/issues"
+  },
+  "homepage": "https://github.com/Dmcdominic/HearthNash#readme"
+}
