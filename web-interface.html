@@ -1,5 +1,9 @@
 <html>
 <head>
+    <!-- Meta data -->
+    <meta charset="utf-8">
+    <!-- Title -->
+    <title>HearthNash - Hearthstone Match Solver</title>
     <!-- Script Dependencies -->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -8,26 +12,46 @@
     <!-- Bundled HearthNash Scripts -->
     <script type="text/javascript" src="lib/HNBundle.js"></script>
 
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/b42570a937.js" crossorigin="anonymous"></script>
+
     <!-- Stylesheets -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/HN-web-interface.css">
+
+    <!-- Initialize Tooltips -->
+    <script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+    </script>
 </head>
 
 
 <body>
-    <div class="container-fluid mt-4 mb-5">
+    <div class="container-fluid mt-4 mb-3">
         <!-- Title -->
-        <div class="row mb-3">
-            <div class="col-12 mb-3 text-center">
-                <h1>HearthNash Web Interface</h1>
+        <div class="row mb-2">
+            <div class="col-12 text-center">
+                <h1>HearthNash</h1>
+                <h3><i>Hearthstone Match Solver</i></h3>
             </div>
         </div>
 
         <!-- Meta Settings -->
         <div class="row">
-            <div class="col-lg-6 col-12 mb-3">
-                <h2><u>Meta Settings</u></h2>
+            <div class="col-12 mb-3">
+                <h2>
+                    <u>Meta Settings</u>
+                    &nbsp;<a class="HN-tooltip-icon" data-toggle="tooltip" data-placement="right"
+                    title="Enter the archetype names and winrates for both players. Each winrate cell represents the probability of the row archetype beating the column archetype. The P0/P1 checkboxes indicate which player brings each deck. Use the 'Import/Download as CSV' buttons to save or share winrate data.">
+                    <i class="far fa-question-circle fa-xs"></i></a>
+                </h2>
+
+                <label for="loadCSV" class="btn">Import CSV:</label>
+                <input type="file" class="mb-2" id="loadCSV" accept=".csv, .xls, .xlsx, .txt">
+
                 <table id="winratesTable" class="table table-bordered table-responsive">
                     <thead id="winratesTableHead">
                         <tr id="theadRow">
@@ -201,11 +225,17 @@
                 </table>
                 <button type="button" class="btn btn-sm btn-dark mb-2" id="minus1Deck">-1 Deck</button>
                 <button type="button" class="btn btn-sm btn-dark mb-2" id="plus1Deck">+1 Deck</button>
+                <input type="button" class="mb-2" id="saveCSV" value="Download as CSV">
             </div>
 
             <!-- Format Settings -->
-            <div class="col-lg-6 col-12 mb-3">
-                <h2><u>Format Settings</u></h2>
+            <div class="col-lg-6 col-12 order-lg-last mb-3">
+                <h2>
+                    <u>Format Settings</u>
+                    &nbsp;<a class="HN-tooltip-icon" data-toggle="tooltip" data-placement="top"
+                    title="Adjust the settings to the desired match format, or choose from the list of presets. 'Remove Winner/Loser Deck' indicates which decks are removed from each player's pool after each game. 'Winner/Loser Can Switch' indicates who is allowed to switch decks between games.">
+                    <i class="far fa-question-circle fa-xs"></i></a>
+                </h2>
                 <div class="row">
                     <div class="col-12 mb-2">
                         <div class="dropdown">
@@ -266,21 +296,55 @@
 
             <!-- Match Tree Explorer -->
             <div class="col-lg-6 col-12 mb-3">
-                <h2><u>Match Tree Explorer</u></h2>
+                <h2>
+                    <u>Match Tree Explorer</u>
+                    &nbsp;<a class="HN-tooltip-icon" data-toggle="tooltip" data-placement="right"
+                    title="Once you've set the desired Meta and Format Settings, click the 'Generate' button. You can then explore all possible sequences of events for the given match, including optimal strategies and other details for each player. If any of the settings are inconsistent/impossible, an error will display below.">
+                    <i class="far fa-question-circle fa-xs"></i></a>
+                </h2>
                 <button type="button" class="btn btn-lg btn-primary mb-2" id="generateMatchTreeBtn">Generate</button>
                 <p id="generateMTBErrorText" hidden></p>
                 <br>
                 <div id="explorerParents">
                     <button type="button" class="btn btn-dark mb-1 mr-2" id="matchTreeRoot" style="display:none">Match Tree Root</button>
                 </div>
-                <h4 class="mt-2 hide-before-generation"><u>Children</u></h4>
+                <h4 class="mt-2 hide-before-generation">
+                    <u>Children</u>
+                    &nbsp;<a class="HN-tooltip-icon" data-toggle="tooltip" data-placement="right"
+                    title="Your current point in the match is the right-most button above, starting with 'Match Tree Root'. Click one of the previous buttons to ascend the tree. Below is a list of all possibilities that could occur at this point in the match, including what player actions lead to that outcome. Click one to descend the tree.">
+                    <i class="far fa-question-circle fa-xs"></i></a>
+                </h4>
                 <div id="explorerChildren">
                 </div>
                 <button type="button" class="btn btn-block btn-secondary" id="childSample" style="display:none"></button>
-                <h4 class="mt-2 hide-before-generation"><u>Vertex Details</u></h4>
+                <h4 class="mt-2 hide-before-generation">
+                    <u>Vertex Details</u>
+                    &nbsp;<a class="HN-tooltip-icon" data-toggle="tooltip" data-placement="right"
+                    title="Below is a list of all the details computed at this point in the match. 'vertexType' defines what phase the match is in. Each 'optimalStrategies' array defines the best strategy for each player, corresponding to their 'options' array. For example, an optimal strategy of [1, 0] means the first option is always best, while [0.5, 0.5] recommends a coin flip.">
+                    <i class="far fa-question-circle fa-xs"></i></a>
+                </h4>
                 <p id="vertexDetails"></p>
             </div>
         </div>
     </div>
+
+
+    <!-- Footer -->
+    <div class="container-fluid">
+        <div class="row mt-4 mb-2">
+            <div class="col-12">
+                <footer id="HN-page-footer">
+                    <div class="text-center">
+                        <p class="footer-text">
+                            For questions, feedback, or collaboration, please <a href="https://dominic-calkosz.com/Contact-Me" target="_blank">contact me</a>!<br>
+                            Take a look at the <a href="https://dominic-calkosz.com/HearthNash" target="_blank">HearthNash research paper, source code, and more</a>.<br>
+                            Check out my other <a href="https://dominic-calkosz.com/Other-Projects#HearthstoneProjects" target="_blank">Hearthstone projects</a>.
+                        </p>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

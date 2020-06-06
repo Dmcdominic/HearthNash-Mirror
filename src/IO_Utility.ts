@@ -9,7 +9,7 @@ import Metrics_Utility = require('../lib/Metrics_Utility.js');
 import Metrics = require('../lib/Metrics.js');
 import Test_Utility = require("../lib/Test_Utility.js");
 
-import fs = require('fs-extra')
+import fs = require('fs-extra');
 
 
 // ---- Constants ----

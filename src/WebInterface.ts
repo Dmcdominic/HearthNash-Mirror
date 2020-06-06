@@ -23,6 +23,10 @@ $(document).ready(function() {
     $("#matchTreeRoot").unbind().click(ascendToRoot);
     // Set up Format Settings Presets Dropdown
     initFormatPresetsDropdown();
+    // Set up Save CSV listener
+    $("#saveCSV").unbind().click(saveCSV);
+    let loadCSVInput = document.getElementById("loadCSV");
+    loadCSVInput.addEventListener('change', loadCSV);
 });
 
 
@@ -38,8 +42,8 @@ function resetWinrateListeners() : void {
             cell.addEventListener('propertyChange', onWinrateCellEdited);
         }
     }
-    $("#minus1Deck").unbind().click(minus1Deck);
-    $("#plus1Deck").unbind().click(plus1Deck);
+    $("#minus1Deck").unbind().click(onMinus1DeckClicked);
+    $("#plus1Deck").unbind().click(onPlus1DeckClicked);
 
     for (let i=0; i < n; i++) {
         let inputField : HTMLInputElement = <HTMLInputElement>(document.getElementById('deckName' + i));
@@ -52,16 +56,27 @@ function resetWinrateListeners() : void {
 // Called when a winrate cell is edited by the user.
 function onWinrateCellEdited() : void {
     let winrates : number[][] = readWinrateMatrix(); // As decimal
+    setWinrateMatrix(winrates);
+}
+
+
+// Set the values in the winrate matrix, using a *decimal* winrates input (not as percentage yet).
+function setWinrateMatrix(winrates : number[][], overrideUsrInput : boolean = false) : void {
     WI_Utility.toPercentMatrix(winrates); // Now as percent
     // Update all the cells
     let n : number = getInterfaceWinrateMatrixSize();
     for (let r=0; r < n; r++) {
         for (let c=0; c < n; c++) {
+            if (c < r && !overrideUsrInput) {
+                continue;
+            }
             let cell : HTMLInputElement = <HTMLInputElement>document.getElementById('deckWinrate' + r + '_' + c);
             cell.value = (winrates[r][c]).toString();
         }
     }
 }
+
+
 
 // Called when a deck name field is edited by the user.
 function onDeckNameEdited() : void {
@@ -73,7 +88,11 @@ function onDeckNameEdited() : void {
 
 
 // Called when the -1 Deck button is clicked
-function minus1Deck() : void {
+function onMinus1DeckClicked() : void {
+    remove1Deck();
+}
+// Removes 1 deck (1 row and column) from the winrates matrix
+function remove1Deck() : void {
     if ($("#winratesTableBody").children().length > 1) {
         $("#winratesTableBody").children().last().remove();
         $("#theadRow").children().last().remove();
@@ -83,7 +102,15 @@ function minus1Deck() : void {
 
 
 // Called when the +1 Deck button is clicked
-function plus1Deck() : void {
+function onPlus1DeckClicked() : void {
+    add1Deck();
+    // Then reset the listeners and validate the deck name/winrate values
+    resetWinrateListeners();
+    onWinrateCellEdited();
+    onDeckNameEdited();
+}
+// Adds 1 deck (1 row and column) to the winrate matrix
+function add1Deck() : void {
     let newRow = $("#winratesTableBody").children().last().clone();
     let lastRowIndex : number = parseInt(newRow.prop("id").replace("winratesRow", ""));
     let newRowIndex : number = lastRowIndex + 1;
@@ -91,8 +118,8 @@ function plus1Deck() : void {
     newRow.appendTo($("#winratesTableBody"));
 
     // Update the id of each important descendent
-    newRow.find("#P0_CheckDeck" + lastRowIndex).prop("id", "P0_CheckDeck" + newRowIndex);
-    newRow.find("#P1_CheckDeck" + lastRowIndex).prop("id", "P1_CheckDeck" + newRowIndex);
+    newRow.find("#P0_CheckDeck" + lastRowIndex).prop("id", "P0_CheckDeck" + newRowIndex).prop("checked", false);
+    newRow.find("#P1_CheckDeck" + lastRowIndex).prop("id", "P1_CheckDeck" + newRowIndex).prop("checked", false);
     newRow.find("#deckName" + lastRowIndex).prop("id", "deckName" + newRowIndex).val("Deck " + newRowIndex);
     for (let i=0; i < newRowIndex; i++) {
         let elem = newRow.find("#deckWinrate" + lastRowIndex + "_" + i);
@@ -114,11 +141,6 @@ function plus1Deck() : void {
         newDeckWinrate.prop("disabled", true);
         newDeckWinrate.val("50");
     }
-
-    // Then reset the listeners and validate the deck name/winrate values
-    resetWinrateListeners();
-    onWinrateCellEdited();
-    onDeckNameEdited();
 }
 
 
@@ -140,6 +162,20 @@ function readWinrateMatrix() : number[][] {
     }
     WI_Utility.fromPercentMatrix(winrates); // Convert to decimal
     WI_Utility.legitimizeWinrateMatrix(winrates); // Legitimize
+    return winrates;
+}
+// Reads the winrate matrix, including the deck names
+function readWinrateMatrixDeckNames() : any[][] {
+    let winrates : any[][] = readWinrateMatrix();
+    let n = winrates.length;
+    let deckNames : string[] = [];
+    for (let i=0; i < n; i++) {
+        let inputField : HTMLInputElement = <HTMLInputElement>(document.getElementById('deckName' + i));
+        deckNames.push(inputField.value);
+        winrates[i].unshift(inputField.value);
+    }
+    deckNames.unshift("");
+    winrates.unshift(deckNames);
     return winrates;
 }
 
@@ -243,10 +279,10 @@ function getCurrentTreeDepth() : number {
 function generateMatchTree() : void {
     let errorText = $("#generateMTBErrorText");
     errorText.attr("hidden","");
-    let MetaInfo : Formats.metaInfo = readMetaSettings();
-    let FormatSettings : Formats.formatSettings = readFormatSettings();
-    let decks : number[][] = readStartingDecks();
     try {
+        let MetaInfo : Formats.metaInfo = readMetaSettings();
+        let FormatSettings : Formats.formatSettings = readFormatSettings();
+        let decks : number[][] = readStartingDecks();
         CurrentMatchRoot = HearthNash.evaluateMatch(decks, FormatSettings, MetaInfo);
     } catch (err) {
         errorText.text(err);
@@ -356,6 +392,75 @@ function clearAllParentsButRoot() : void {
         explorerParents.children().last().remove();
     }
 }
+
+
+
+// ===== CSV SAVING/LOADING =====
+
+
+// Downloads the current winrate matrix, including deck names, as a csv
+function saveCSV() : void {
+    let winratesTxt : string = WI_Utility.array2DToCSV(readWinrateMatrixDeckNames());
+    WI_Utility.download("HearthNash winrates.csv", winratesTxt);
+}
+
+
+// Loads the file given as input into the winrates matrix and deck names
+function loadCSV() : void {
+    let inputElem = <HTMLInputElement>(document.getElementById("loadCSV"));
+    if (inputElem.files.length === 0) {
+        console.error("No files given to loadCSV");
+        return;
+    }
+    let file = inputElem.files[0];
+    let winrates : any[][];
+    let fr = new FileReader();
+    fr.onload = function(e) {
+        try {
+            let fileTxt : string = <string>(e.target.result);
+            let rows : string[] = fileTxt.split('\n');
+
+            let winratesSize : number = rows[0].split(',').length - 1;
+            rows.shift();
+
+            // Update the number of decks in the interface
+            while (winratesSize > getInterfaceWinrateMatrixSize()) {
+                add1Deck();
+            }
+            while (winratesSize < getInterfaceWinrateMatrixSize()) {
+                remove1Deck();
+            }
+
+            let newWinrates : any[][] = [];
+            for (let r=0; r < winratesSize; r++) {
+                let thisRow : any[] = rows[r].split(',');
+                // Update the deck name
+                $("#deckName" + r).val(thisRow[0]);
+                thisRow.shift();
+                // The rest are winrates
+                newWinrates.push([]);
+                for (let c=0; c < thisRow.length; c++) {
+                    newWinrates[r][c] = parseFloat(thisRow[c]);
+                }
+            }
+
+            // Now actually set the values of the winrate matrix in the interface
+            setWinrateMatrix(newWinrates, true);
+            // Then reset the listeners and validate the deck name/winrate values
+            resetWinrateListeners();
+            onWinrateCellEdited();
+            onDeckNameEdited();
+        } catch (err) {
+            console.error("Error caught while trying to read CSV: " + err);
+            let errorText = $("#generateMTBErrorText");
+            errorText.text("Error caught while trying to read CSV: " + err);
+            errorText.removeAttr("hidden");
+            return;
+        }
+    };
+    fr.readAsText(file);
+}
+
 
 
 

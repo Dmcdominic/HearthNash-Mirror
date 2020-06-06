@@ -285,6 +285,46 @@ function listArrayElemsDeckNames(array : number[], matchRoot : HearthNash.matchR
 }
 
 
+// ===== CSV UTILITY FUNCTIONS =====
+
+
+// Utility function to download a file containing certain text.
+// Source - https://www.geeksforgeeks.org/how-to-trigger-a-file-download-when-clicking-an-html-button-or-javascript/
+function download(file : string, text : string) : void {
+    //creating an invisible element
+    let element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8, ' + encodeURIComponent(text));
+    element.setAttribute('download', file);
+    //the above code is equivalent to
+    // <a href="path of file" download="file name">
+
+    document.body.appendChild(element);
+    //onClick property
+    element.click();
+    document.body.removeChild(element);
+}
+
+
+// Converts a 2D array to a CSV (string).
+// Replicated from IO_Utility, because fs-extra seems to conflict with browserify
+function array2DToCSV(arr : any[][]) : string {
+    let CSV : string = "";
+    if (!Array.isArray(arr)) throw new Error("Non-array passed to array2DToCSV()");
+    for (let i=0; i < arr.length; i++) {
+        CSV += array1DToCSV(arr[i]) + ((i == arr.length - 1) ? "" : "\n");
+    }
+    return CSV;
+}
+function array1DToCSV(arr : any[], separator : string = ",") {
+    let CSV : string = "";
+    if (!Array.isArray(arr)) throw new Error("Non-array passed to array1DToCSV()");
+    for (let i=0; i < arr.length; i++) {
+        CSV += arr[i] + ((i == arr.length - 1) ? "" : separator);
+    }
+    return CSV;
+}
+
+
 
 // ===== MODULE EXPORTS =====
 module.exports.toPercentMatrix = toPercentMatrix;
@@ -298,3 +338,5 @@ module.exports.vertexWinProbabilityStr = vertexWinProbabilityStr;
 module.exports.deckName = deckName;
 module.exports.listArrayElems = listArrayElems;
 module.exports.listArrayElemsDeckNames = listArrayElemsDeckNames;
+module.exports.array2DToCSV = array2DToCSV;
+module.exports.download = download;
